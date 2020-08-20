@@ -17,20 +17,19 @@ Let's say you wish to wrap a `net.Conn` such that 'Write' logs a debug message
 each time it's called.
 
 ```go
-
 type logWritesConn struct {
-  net.Conn
-  logger log.Logger
+	net.Conn
+	logger *log.Logger
 }
 
-func NewLogWritesConn(c net.Conn, l log.Logger) net.Conn {
-  return logWritesConn{c, l}
+func NewLogWritesConn(c net.Conn, l *log.Logger) net.Conn {
+	return &logWritesConn{c, l}
 }
 
 func (l *logWritesConn) Write(b []byte) (int, error) {
-  n, err := l.Conn.Write(b)
-  l.logger.Debugf("write occured: %v bytes, %w", n, err)
-  return n, err
+	n, err := l.Conn.Write(b)
+	l.logger.Printf("write occured: %v bytes, %v", n, err)
+	return n, err
 }
 ```
 
@@ -42,5 +41,5 @@ implement `io.ReaderFrom`, even though the wrapped `TCPConn` does implement
 That's where this codegen comes in! Retaining those interfaces is a simple matter of generating some code to do so:
 
 ```
-igen my.go.package/path/logconn "*logWritesConn.Conn" io.ReaderFrom,syscall.Conn > igen_generated.go
+igen my.go.package/path/logconn "l *logWritesConn.Conn" io.ReaderFrom,syscall.Conn > igen_generated.go
 ```

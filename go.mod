@@ -2,4 +2,4 @@ module github.com/euank/igen
 
 go 1.14
 
-require golang.org/x/tools v0.0.0-20200522201501-cb1345f3a375
+require golang.org/x/tools v0.0.0-20200820010801-b793a1359eac
