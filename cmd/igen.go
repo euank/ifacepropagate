@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	igen "github.com/euank/igen/pkg"
+	"github.com/euank/igen/pkg/igen"
 	"golang.org/x/tools/go/packages"
 )
 
