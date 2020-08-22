@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/euank/igen/pkg/igen"
+	"github.com/euank/ifacepropagate/pkg/ifacepropagate"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -14,7 +14,7 @@ import (
 
 func usage() {
 	fmt.Fprintf(os.Stderr, `Usage:
-igen [package] [xxx] ...
+ifacepropagate [package] [xxx] ...
 `)
 }
 
@@ -39,7 +39,7 @@ func main() {
 	}
 	pkg := pkgs[0]
 
-	ret, err := igen.PropogateInterfaces(
+	ret, err := ifacepropagate.PropogateInterfaces(
 		pkg, "propogateInterfaces", ifaceSel, ifaces,
 	)
 	if err != nil {

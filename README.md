@@ -1,4 +1,4 @@
-## igen -- Generate go interface wrappers correctly
+## interfacepropogate -- Generate go interface wrappers correctly
 
 This is a bit of codegen to hack around the problem described in [this blog
 post](https://medium.com/@cep21/interface-wrapping-method-erasure-c523b3549912).
@@ -41,5 +41,13 @@ implement `io.ReaderFrom`, even though the wrapped `TCPConn` does implement
 That's where this codegen comes in! Retaining those interfaces is a simple matter of generating some code to do so:
 
 ```
-igen my.go.package/path/logconn "l *logWritesConn.Conn" io.ReaderFrom,syscall.Conn > igen_generated.go
+interfacepropogate my.go.package/path/logconn "l *logWritesConn.Conn" io.ReaderFrom,syscall.Conn > igen_generated.go
+```
+
+and then updating the 'New' function above like so:
+
+```
+func NewLogWritesConn(c net.Conn, l *log.Logger) net.Conn {
+	return (&logWritesConn{c, l}).propogateInterfaces()
+}
 ```

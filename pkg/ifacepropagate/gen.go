@@ -1,4 +1,4 @@
-package igen
+package ifacepropagate
 
 import (
 	"bytes"
@@ -58,7 +58,7 @@ func PropogateInterfaces(
 	}
 
 	// And now begin constructing the file
-	f, err := parser.ParseFile(pkg.Fset, "_igen_generated.go", "package "+pkg.Name, parser.PackageClauseOnly)
+	f, err := parser.ParseFile(pkg.Fset, "_ifacepropagate_generated.go", "package "+pkg.Name, parser.PackageClauseOnly)
 	if err != nil {
 		return "", err
 	}
@@ -472,7 +472,7 @@ func aliasInterfaces(pkg *packages.Package, s *iface, ifaces []*iface) ([]*iface
 			continue
 		}
 		// Otherwise, create an alias
-		name := "igenIfaceAlias"
+		name := "ifacepropagateIfaceAlias"
 		for suffix := 0; true; suffix++ {
 			if _, taken := used[name+fmt.Sprintf("%d", suffix)]; taken {
 				continue
