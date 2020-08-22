@@ -14,8 +14,8 @@ import (
 	"golang.org/x/tools/go/packages"
 )
 
-// PropogateInterfaces wraps the given interface in the given package to allow also
-// implementing a named set of additional interfaces iff the given
+// PropogateInterfaces wraps the given interface in the given package to allow
+// also implementing a named set of additional interfaces iff the given
 // wrappingInterface also implements them, as determined at runtime.
 //
 // Let's consider a simple concrete example:
@@ -25,7 +25,7 @@ import (
 //         io.Reader
 //     }
 //
-// One can call this package with:
+// Calling:
 //
 //     PropogateInterfaces(pkg, "propogateReader", "f *foo.Reader", []string{"io.Closer"})
 //
