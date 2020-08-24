@@ -1,4 +1,4 @@
-## interfacepropogate -- Generate go interface wrappers correctly
+## interfacepropogate - Generate go interface wrappers, while propogating other interfaces
 
 This is a bit of codegen to hack around the problem described in [this blog
 post](https://medium.com/@cep21/interface-wrapping-method-erasure-c523b3549912).
