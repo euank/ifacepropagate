@@ -341,24 +341,27 @@ func (s *structSel) implementMethod(iface *iface, method *types.Func) *ast.FuncD
 		})
 	}
 
-	body := []ast.Stmt{
-		&ast.ReturnStmt{
-			Results: []ast.Expr{
-				&ast.CallExpr{
-					Fun: &ast.SelectorExpr{
-						X: &ast.TypeAssertExpr{
-							X: &ast.SelectorExpr{
-								X:   ast.NewIdent(s.receiver),
-								Sel: ast.NewIdent(s.member.Name()),
-							},
-							Type: iface.expr(),
-						},
-						Sel: ast.NewIdent(method.Name()),
-					},
-					Args: callArgs,
+	callExpr := &ast.CallExpr{
+		Fun: &ast.SelectorExpr{
+			X: &ast.TypeAssertExpr{
+				X: &ast.SelectorExpr{
+					X:   ast.NewIdent(s.receiver),
+					Sel: ast.NewIdent(s.member.Name()),
 				},
+				Type: iface.expr(),
 			},
+			Sel: ast.NewIdent(method.Name()),
 		},
+		Args: callArgs,
+	}
+
+	body := []ast.Stmt{&ast.ExprStmt{X: callExpr}}
+	if len(results) > 0 {
+		body = []ast.Stmt{
+			&ast.ReturnStmt{
+				Results: []ast.Expr{callExpr},
+			},
+		}
 	}
 
 	return &ast.FuncDecl{
@@ -395,12 +398,12 @@ type iface struct {
 
 func parseInterface(pkg *packages.Package, s string) (*iface, error) {
 	// 'io.Reader' for example -> [io, Reader]
-	parts := strings.SplitN(s, ".", 2)
+	lastDot := strings.LastIndex(s, ".")
 	var pkgName, ifaceName string
-	if len(parts) == 2 {
-		pkgName, ifaceName = parts[0], parts[1]
+	if lastDot == -1 {
+		ifaceName = s
 	} else {
-		ifaceName = parts[0]
+		pkgName, ifaceName = s[0:lastDot], s[lastDot+1:]
 	}
 	// Same pkg case
 	ifacePkg := pkg
