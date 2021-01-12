@@ -7,7 +7,7 @@ import (
 	"io"
 )
 
-func (r readFrobulator) propogateInterfaces() io.Reader {
+func (r *ptrReadFrobulator) propogateInterfaces() io.Reader {
 	_, ok0 := r.Reader.(pkg.Frobulator)
 	switch {
 	case ok0:
@@ -23,6 +23,6 @@ func (r readFrobulator) propogateInterfaces() io.Reader {
 		panic("unreachable")
 	}
 }
-func (r readFrobulator) Frobulate() {
+func (r *ptrReadFrobulator) Frobulate() {
 	r.Reader.(pkg.Frobulator).Frobulate()
 }

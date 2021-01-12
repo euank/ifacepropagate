@@ -49,6 +49,8 @@ func PropogateInterfaces(
 		return "", err
 	}
 
+	userImpldFuncs := structMethodLookup(structSel)
+
 	// And now look up all the interfaces we're supposed to wrap
 	wrappingIfaces := make([]*iface, 0, len(wrappedInterfaces))
 	for _, wiface := range wrappedInterfaces {
@@ -195,6 +197,11 @@ func PropogateInterfaces(
 				// already impld; hope they're compatible, otherwise we'll fail to compile
 				continue
 			}
+			// Also skip all functions the author of the struct has implemented
+			// themselves too, assume they know better.
+			if _, ok := userImpldFuncs[method.Name()]; ok {
+				continue
+			}
 			implFunc := structSel.implementMethod(iface, method)
 			impldFuncs[method.Name()] = struct{}{}
 			decls = append(decls, implFunc)
@@ -218,6 +225,7 @@ type structSel struct {
 	pointerReceiver bool
 	structName      string
 	structObj       *types.Struct
+	named           *types.Named
 	member          *types.TypeName
 	iface           *iface
 }
@@ -259,6 +267,7 @@ func parseStructSel(pkg *packages.Package, s string) (*structSel, error) {
 		receiver:        recv,
 		pointerReceiver: ptr,
 		structName:      structName,
+		named:           obj.Type().(*types.Named),
 		structObj:       obj.Type().(*types.Named).Underlying().(*types.Struct),
 		member:          memberObj.(*types.Var).Type().(*types.Named).Obj(),
 		iface: &iface{
@@ -480,10 +489,14 @@ func aliasInterfaces(pkg *packages.Package, s *iface, ifaces []*iface) ([]*iface
 		// Otherwise, create an alias
 		name := "ifacepropagateIfaceAlias"
 		for suffix := 0; true; suffix++ {
-			if _, taken := used[name+fmt.Sprintf("%d", suffix)]; taken {
+			candidate := name + fmt.Sprintf("%d", suffix)
+			if _, taken := used[candidate]; taken {
 				continue
 			}
-			name += fmt.Sprintf("%d", suffix)
+			if pkg.Types.Scope().Lookup(candidate) != nil {
+				continue
+			}
+			name = candidate
 			break
 		}
 		decls = append(decls, &ast.GenDecl{
@@ -515,4 +528,12 @@ func aliasInterfaces(pkg *packages.Package, s *iface, ifaces []*iface) ([]*iface
 	}
 
 	return ret, decls
+}
+
+func structMethodLookup(sel *structSel) map[string]struct{} {
+	ret := make(map[string]struct{}, sel.named.NumMethods())
+	for i := 0; i < sel.named.NumMethods(); i++ {
+		ret[sel.named.Method(i).Name()] = struct{}{}
+	}
+	return ret
 }

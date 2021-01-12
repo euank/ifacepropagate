@@ -1,4 +1,4 @@
-.PHONY: all gen-tests
+.PHONY: all gen-tests test clean
 
 all:
 	go build -o ifacepropagate ./cmd
@@ -9,9 +9,18 @@ gen-tests: all
 	cd ./tests/cases/case01 && \
 		$(ROOT_DIR)/ifacepropagate \
 		ifacepropogate.testcase/test01 \
-		"r readCloseFrobulator.Reader" \
-		io.Reader,ifacepropogate.testcase/test01/pkg.Frobulator \
+		"r readFrobulator.Reader" \
+		ifacepropogate.testcase/test01/pkg.Frobulator \
 		> ./case_gen.go
+	cd ./tests/cases/case01 && \
+		$(ROOT_DIR)/ifacepropagate \
+		ifacepropogate.testcase/test01 \
+		"r *ptrReadFrobulator.Reader" \
+		ifacepropogate.testcase/test01/pkg.Frobulator \
+		> ./case_gen2.go
+
+test:
+	cd ./tests/cases/case01 && go test ./...
 
 clean:
 	rm -f ./ifacepropagate
