@@ -7,7 +7,7 @@ import (
 )
 
 func newLoggedConn(l *log.Logger, conn net.Conn) net.Conn {
-	return (&closeLoggedConn{conn, l}).propogateInterfaces()
+	return (&closeLoggedConn{conn, l}).propagateInterfaces()
 }
 
 type closeLoggedConn struct {

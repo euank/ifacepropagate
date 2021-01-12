@@ -1,4 +1,4 @@
-## interfacepropogate - Generate go interface wrappers, while propogating other interfaces
+## interfacepropagate - Generate go interface wrappers, while propagating other interfaces
 
 This is a bit of codegen to hack around the problem described in [this blog
 post](https://medium.com/@cep21/interface-wrapping-method-erasure-c523b3549912).
@@ -13,9 +13,9 @@ This program allows generating some code to improve the situation somewhat.
 Usage:
   ifacepropagate [package] [struct] [interfaces] > out_generated.go
 
-ifacepropagate generates code to allow 'propogating' interface implementations
+ifacepropagate generates code to allow 'propagating' interface implementations
 up from an embedded interface.
-More specifically, it generates a '[struct].propogateInterfaces()' method which
+More specifically, it generates a '[struct].propagateInterfaces()' method which
 returns a concrete type that implements only the interfaces in the [interfaces]
 list that the embedded type implemented.
 
@@ -34,7 +34,7 @@ ARGS:
               struct is named 'MyStruct', has a pointer receiver, and is
               embedding a 'net.Conn' interface.
 
-  interfaces  The list of interfaces to "propogate" up, comma separated.
+  interfaces  The list of interfaces to "propagate" up, comma separated.
               For example 'syscall.Conn,io.Reader,net.Conn'.
 ```
 
@@ -71,13 +71,13 @@ implement `io.ReaderFrom`, even though the wrapped `TCPConn` does implement
 That's where this codegen comes in! Retaining those interfaces is a simple matter of generating some code to do so:
 
 ```
-interfacepropogate my.go.package/path/logconn "l *logWritesConn.Conn" io.ReaderFrom,syscall.Conn > igen_generated.go
+interfacepropagate my.go.package/path/logconn "l *logWritesConn.Conn" io.ReaderFrom,syscall.Conn > igen_generated.go
 ```
 
 and then updating the 'New' function above like so:
 
 ```
 func NewLogWritesConn(c net.Conn, l *log.Logger) net.Conn {
-	return (&logWritesConn{c, l}).propogateInterfaces()
+	return (&logWritesConn{c, l}).propagateInterfaces()
 }
 ```

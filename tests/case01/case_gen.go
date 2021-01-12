@@ -3,11 +3,11 @@
 package case01
 
 import (
-	"ifacepropogate.testcase/test01/pkg"
+	"ifacepropagate.testcase/test01/pkg"
 	"io"
 )
 
-func (r readFrobulator) propogateInterfaces() io.Reader {
+func (r readFrobulator) propagateInterfaces() io.Reader {
 	_, ok0 := r.Reader.(pkg.Frobulator)
 	switch {
 	case ok0:

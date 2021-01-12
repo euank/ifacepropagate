@@ -12,7 +12,7 @@ type ifacepropagateIfaceAlias0 interface {
 	syscall.Conn
 }
 
-func (l *closeLoggedConn) propogateInterfaces() net.Conn {
+func (l *closeLoggedConn) propagateInterfaces() net.Conn {
 	_, ok0 := l.Conn.(io.ReaderFrom)
 	_, ok1 := l.Conn.(ifacepropagateIfaceAlias0)
 	switch {

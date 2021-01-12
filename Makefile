@@ -8,19 +8,19 @@ ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 gen-tests: all
 	cd ./tests/case01 && \
 		$(ROOT_DIR)/ifacepropagate \
-		ifacepropogate.testcase/test01 \
+		ifacepropagate.testcase/test01 \
 		"r readFrobulator.Reader" \
-		ifacepropogate.testcase/test01/pkg.Frobulator \
+		ifacepropagate.testcase/test01/pkg.Frobulator \
 		> ./case_gen.go
 	cd ./tests/case01 && \
 		$(ROOT_DIR)/ifacepropagate \
-		ifacepropogate.testcase/test01 \
+		ifacepropagate.testcase/test01 \
 		"r *ptrReadFrobulator.Reader" \
-		ifacepropogate.testcase/test01/pkg.Frobulator \
+		ifacepropagate.testcase/test01/pkg.Frobulator \
 		> ./case_gen2.go
 	cd ./tests/case02 && \
 		$(ROOT_DIR)/ifacepropagate \
-		ifacepropogate.testcase/case02 \
+		ifacepropagate.testcase/case02 \
 		"p *partialOverride.If1" \
 		If2 \
 		> ./case_gen.go

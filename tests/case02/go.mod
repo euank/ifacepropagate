@@ -1,4 +1,4 @@
-module ifacepropogate.testcase/case02
+module ifacepropagate.testcase/case02
 
 go 1.15
 

@@ -16,9 +16,9 @@ func usage() {
 	fmt.Fprintf(os.Stderr, `Usage:
   ifacepropagate [package] [struct] [interfaces] > out_generated.go
 
-ifacepropagate generates code to allow 'propogating' interface implementations
+ifacepropagate generates code to allow 'propagating' interface implementations
 up from an embedded interface.
-More specifically, it generates a '[struct].propogateInterfaces()' method which
+More specifically, it generates a '[struct].propagateInterfaces()' method which
 returns a concrete type that implements only the interfaces in the [interfaces]
 list that the embedded type implemented.
 
@@ -37,7 +37,7 @@ ARGS:
               struct is named 'MyStruct', has a pointer receiver, and is
               embedding a 'net.Conn' interface.
 
-  interfaces  The list of interfaces to "propogate" up, comma separated.
+  interfaces  The list of interfaces to "propagate" up, comma separated.
               For example 'syscall.Conn,io.Reader,net.Conn'.
 
 
@@ -66,7 +66,7 @@ func main() {
 	pkg := pkgs[0]
 
 	ret, err := ifacepropagate.PropogateInterfaces(
-		pkg, "propogateInterfaces", ifaceSel, ifaces,
+		pkg, "propagateInterfaces", ifaceSel, ifaces,
 	)
 	if err != nil {
 		panic(err)

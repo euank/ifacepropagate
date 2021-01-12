@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"ifacepropogate.testcase/test01/pkg"
+	"ifacepropagate.testcase/test01/pkg"
 )
 
 type frobulatingReader struct {
@@ -22,8 +22,8 @@ func TestCase01(t *testing.T) {
 	normalReader := &bytes.Buffer{}
 	frobingReader := &frobulatingReader{}
 
-	wrappedNormal := readFrobulator{normalReader}.propogateInterfaces()
-	wrappedFrobber := readFrobulator{frobingReader}.propogateInterfaces()
+	wrappedNormal := readFrobulator{normalReader}.propagateInterfaces()
+	wrappedFrobber := readFrobulator{frobingReader}.propagateInterfaces()
 
 	_, frobs := wrappedNormal.(pkg.Frobulator)
 	require.False(t, frobs)

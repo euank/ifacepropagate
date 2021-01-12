@@ -2,7 +2,7 @@
 
 package case02
 
-func (p *partialOverride) propogateInterfaces() If1 {
+func (p *partialOverride) propagateInterfaces() If1 {
 	_, ok0 := p.If1.(If2)
 	switch {
 	case ok0:
