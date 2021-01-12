@@ -1,7 +1,7 @@
 .PHONY: all gen-tests test clean
 
 all:
-	go build -o ifacepropagate ./cmd
+	go build -o ifacepropagate ./cmd/ifacepropagate
 
 ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
