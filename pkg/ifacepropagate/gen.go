@@ -263,6 +263,7 @@ func parseStructSel(pkg *packages.Package, s string) (*structSel, error) {
 		return nil, fmt.Errorf("'%v.%v' in pkg %q was not an interface", structName, memberName, pkg.Name)
 	}
 
+	memberPkgPath := memberObj.(*types.Var).Type().(*types.Named).Obj().Pkg().Path()
 	return &structSel{
 		receiver:        recv,
 		pointerReceiver: ptr,
@@ -272,8 +273,8 @@ func parseStructSel(pkg *packages.Package, s string) (*structSel, error) {
 		member:          memberObj.(*types.Var).Type().(*types.Named).Obj(),
 		iface: &iface{
 			pkgName:          memberObj.(*types.Var).Type().(*types.Named).Obj().Pkg().Name(),
-			pkgPath:          memberObj.(*types.Var).Type().(*types.Named).Obj().Pkg().Path(),
-			isCurrentPackage: false, // this may be wrong :(
+			pkgPath:          memberPkgPath,
+			isCurrentPackage: memberPkgPath == pkg.PkgPath,
 			name:             memberObj.Name(),
 			obj:              memberObj.Type().Underlying().(*types.Interface),
 		},
@@ -295,7 +296,7 @@ func (s *structSel) declareFunction(name string, body *ast.BlockStmt) *ast.FuncD
 		Type: &ast.FuncType{
 			Params: &ast.FieldList{},
 			Results: &ast.FieldList{
-				List: []*ast.Field{{Type: ast.NewIdent(s.member.Type().String())}},
+				List: []*ast.Field{{Type: s.iface.expr()}},
 			},
 		},
 		Recv: &ast.FieldList{

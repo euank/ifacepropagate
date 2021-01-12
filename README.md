@@ -9,7 +9,37 @@ This program allows generating some code to improve the situation somewhat.
 
 ### Usage
 
-Just see the example, it's simpler to explain that way tbqh.
+```
+Usage:
+  ifacepropagate [package] [struct] [interfaces] > out_generated.go
+
+ifacepropagate generates code to allow 'propogating' interface implementations
+up from an embedded interface.
+More specifically, it generates a '[struct].propogateInterfaces()' method which
+returns a concrete type that implements only the interfaces in the [interfaces]
+list that the embedded type implemented.
+
+This is useful to, for example, embed a ResponseWriter, and then return a
+ResponseWriter which only implements http.Hijacker if the inner response writer
+did.
+
+ARGS:
+  package     The go package which contains your struct that embeds an
+              interface such as 'github.com/user/project/pkg/type'.
+              The following struct must be in this package, and this package
+              should already compile.
+
+  struct      A specifier for the struct that contains an embedded interface
+               which we're wrapping. For example "s *MyStruct.Conn" if the
+              struct is named 'MyStruct', has a pointer receiver, and is
+              embedding a 'net.Conn' interface.
+
+  interfaces  The list of interfaces to "propogate" up, comma separated.
+              For example 'syscall.Conn,io.Reader,net.Conn'.
+```
+
+See also the example below
+
 
 ### Example
 

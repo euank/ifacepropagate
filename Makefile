@@ -18,9 +18,17 @@ gen-tests: all
 		"r *ptrReadFrobulator.Reader" \
 		ifacepropogate.testcase/test01/pkg.Frobulator \
 		> ./case_gen2.go
+	cd ./tests/case02 && \
+		$(ROOT_DIR)/ifacepropagate \
+		ifacepropogate.testcase/case02 \
+		"p *partialOverride.If1" \
+		If2 \
+		> ./case_gen.go
+
 
 test:
 	cd ./tests/case01 && go test ./...
+	cd ./tests/case02 && go test ./...
 
 clean:
 	rm -f ./ifacepropagate
