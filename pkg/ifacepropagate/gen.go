@@ -186,7 +186,7 @@ func PropogateInterfaces(
 
 	decls = append(decls, wrapFunc)
 
-	// And now generate all the interface implementations
+	// And now generate all the interface implementations that we need
 	impldFuncs := map[string]struct{}{}
 	for _, iface := range wrappingIfaces {
 		for i := 0; i < iface.obj.NumMethods(); i++ {
