@@ -345,9 +345,18 @@ func (s *structSel) implementMethod(iface *iface, method *types.Func) *ast.FuncD
 	ret := sig.Results()
 	for i := 0; i < ret.Len(); i++ {
 		arg := ret.At(i)
+
+		typeName := arg.Type().String()
+		// render the type of foo/bar/baz.Qux as baz.Qux
+		if namedType, ok := arg.Type().(*types.Named); ok{
+			if namedType.Obj().Pkg() != nil {
+				typeName = fmt.Sprintf("%s.%s", namedType.Obj().Pkg().Name(), namedType.Obj().Name())
+			}
+		}
+
 		results = append(results, &ast.Field{
 			Names: []*ast.Ident{ast.NewIdent(arg.Name())},
-			Type:  ast.NewIdent(arg.Type().String()),
+			Type:  ast.NewIdent(typeName),
 		})
 	}
 
@@ -439,7 +448,7 @@ func parseInterface(pkg *packages.Package, s string) (*iface, error) {
 	return &iface{
 		ifacePkg.PkgPath,
 		ifacePkg.Name,
-		pkgName == "",
+		pkgName == "" || pkgName == pkg.PkgPath,
 		ifaceName,
 		obj.Type().Underlying().(*types.Interface),
 	}, nil
