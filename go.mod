@@ -1,5 +1,12 @@
 module github.com/euank/ifacepropagate
 
-go 1.14
+go 1.22.0
 
-require golang.org/x/tools v0.0.0-20200820010801-b793a1359eac
+toolchain go1.23.5
+
+require golang.org/x/tools v0.30.0
+
+require (
+	golang.org/x/mod v0.23.0 // indirect
+	golang.org/x/sync v0.11.0 // indirect
+)
